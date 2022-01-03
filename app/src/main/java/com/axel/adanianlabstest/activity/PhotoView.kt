@@ -138,7 +138,7 @@ class PhotoView : AppCompatActivity(),ImageAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(position:Int){
-        toast("Clicked")
+        //toast("Clicked")
         //intention(PhotoDetails::class.java)
         val intent = Intent(this, PhotoDetails::class.java)
         intent.putExtra("image", hit?.get(position)?.webformatURL)
