@@ -2,7 +2,6 @@ package com.axel.adanianlabstest.activity
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
@@ -10,20 +9,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.axel.adanianlabstest.R
+import com.axel.adanianlabstest.activity.payLoads.Tag
 import com.axel.adanianlabstest.adapters.ImageAdapter
 import com.axel.adanianlabstest.api.PixabayApi
 import com.axel.adanianlabstest.apiBody.APIClient
 import com.axel.adanianlabstest.helpers.Loader
 import com.axel.adanianlabstest.models.Dogs
 import com.axel.adanianlabstest.models.Hit
-import com.axel.adanianlabstest.payLoads.Tag
-import com.axel.adanianlabstest.utills.intention
 import com.axel.adanianlabstest.utills.toast
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
 
 
 class PhotoView : AppCompatActivity(),ImageAdapter.OnItemClickListener {
