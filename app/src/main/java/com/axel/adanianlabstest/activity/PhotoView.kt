@@ -1,5 +1,6 @@
 package com.axel.adanianlabstest.activity
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -32,8 +33,8 @@ class PhotoView : AppCompatActivity(),ImageAdapter.OnItemClickListener {
     private lateinit var apiC: PixabayApi
     var l: Loader = Loader
     private var tag: Tag = Tag()
-    private lateinit var hit: Hit
-    private lateinit var dog:Dogs
+    private  var hit:List<Hit>? = null
+    private  var dog:Dogs? =null
     private lateinit var bmp:Bitmap
     private lateinit var byteArray:ByteArray
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,18 +45,6 @@ class PhotoView : AppCompatActivity(),ImageAdapter.OnItemClickListener {
 
         val searchView = findViewById<SearchView>(R.id.searchView)
 
-
-
-
-//        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                return false
-//            }
-//
-//            override fun onQueryTextChange(newText: String): Boolean {
-//                return false
-//            }
-//        })
 
         manager = LinearLayoutManager(this)
         getDogs()
@@ -81,6 +70,7 @@ class PhotoView : AppCompatActivity(),ImageAdapter.OnItemClickListener {
                         Log.d("##SUCCESS##", "${response.body()!!.hits}")
                         recyclerView = findViewById<RecyclerView>(R.id.recyclerview).apply {
                             imageAdapter = ImageAdapter(response.body()!!.hits,this@PhotoView)
+                            hit=response.body()!!.hits
                             layoutManager = manager
                             adapter = imageAdapter
                         }
@@ -121,6 +111,7 @@ class PhotoView : AppCompatActivity(),ImageAdapter.OnItemClickListener {
                         Log.e("####SUCCESS", "${response.body()!!.hits}")
                         recyclerView = findViewById<RecyclerView>(R.id.recyclerview).apply {
                             imageAdapter = ImageAdapter(response.body()!!.hits,this@PhotoView)
+                            hit=response.body()!!.hits
                             layoutManager = manager
                             adapter = imageAdapter
                         }
@@ -151,20 +142,15 @@ class PhotoView : AppCompatActivity(),ImageAdapter.OnItemClickListener {
 
     override fun onItemClick(position:Int){
         toast("Clicked")
+        //intention(PhotoDetails::class.java)
+        val intent = Intent(this, PhotoDetails::class.java)
+        intent.putExtra("image", hit?.get(position)?.webformatURL)
+        Log.e("####PICTURE",hit.toString())
+        intent.putExtra("title", hit?.get(position)?.user)
+        intent.putExtra("description",hit?.get(position)?.tags)
+        startActivity(intent)
 
-        //        val bmp = BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)
-//        val stream = ByteArrayOutputStream()
-//        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream)
-//        val byteArray: ByteArray = stream.toByteArray()
 
-        intention(PhotoDetails::class.java)
-        bmp = BitmapFactory.decodeResource(resources,R.drawable.ic_launcher_background)
-        val stream = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream)
-        byteArray = stream.toByteArray()
-        intent.putExtra("image",dog.hits[position].webformatURL )
-        intent.putExtra("title",dog.hits[position].user)
-        intent.putExtra("description",dog.hits[position].tags)
 
     }
 
