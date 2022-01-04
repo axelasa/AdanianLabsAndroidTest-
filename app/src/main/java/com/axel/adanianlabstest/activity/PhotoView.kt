@@ -4,11 +4,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
-import android.widget.SearchView
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.SearchView
 import com.axel.adanianlabstest.R
+import com.axel.adanianlabstest.activity.connectivity.Connection
 import com.axel.adanianlabstest.activity.payLoads.Tag
 import com.axel.adanianlabstest.adapters.ImageAdapter
 import com.axel.adanianlabstest.api.PixabayApi
@@ -16,8 +18,9 @@ import com.axel.adanianlabstest.apiBody.APIClient
 import com.axel.adanianlabstest.helpers.Loader
 import com.axel.adanianlabstest.models.Dogs
 import com.axel.adanianlabstest.models.Hit
-import com.axel.adanianlabstest.utills.toast
 import kotlinx.android.synthetic.main.activity_main.*
+import org.imaginativeworld.oopsnointernet.callbacks.ConnectionCallback
+import org.imaginativeworld.oopsnointernet.dialogs.pendulum.NoInternetDialogPendulum
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,17 +40,50 @@ class PhotoView : AppCompatActivity(),ImageAdapter.OnItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        title = "Photo View"
+
+        if (!Connection.isOnline(this)) {
+            // No Internet Dialog: Pendulum
+            NoInternetDialogPendulum.Builder(
+                this,
+                lifecycle
+            ).apply {
+                dialogProperties.apply {
+                    connectionCallback = object : ConnectionCallback { // Optional
+                        override fun hasActiveConnection(hasActiveConnection: Boolean) {
+                            // ...
+                        }
+                    }
+
+                    cancelable = false // Optional
+                    noInternetConnectionTitle = "No Internet" // Optional
+                    noInternetConnectionMessage =
+                        "Check your Internet connection and try again." // Optional
+                    showInternetOnButtons = true // Optional
+                    pleaseTurnOnText = "Please turn on" // Optional
+                    wifiOnButtonText = "Wifi" // Optional
+                    mobileDataOnButtonText = "Mobile data" // Optional
+
+                    onAirplaneModeTitle = "No Internet" // Optional
+                    onAirplaneModeMessage = "You have turned on the airplane mode." // Optional
+                    pleaseTurnOffText = "Please turn off" // Optional
+                    airplaneModeOffButtonText = "Airplane mode" // Optional
+                    showAirplaneModeOffButtons = true // Optional
+                }
+            }.build()
+        }
+
         //api call initialization
         apiC = APIClient.client?.create(PixabayApi::class.java)!!
 
-        val searchView = findViewById<SearchView>(R.id.searchView)
+        val searchView = findViewById<EditText>(R.id.searchView)
 
 
         manager = LinearLayoutManager(this)
         getDogs()
 
         searching.setOnClickListener {
-            searchPhoto(searchView.query.toString())
+            searchPhoto(searchView.text.toString())
         }
 
 
